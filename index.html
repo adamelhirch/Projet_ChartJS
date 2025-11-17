@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>StackOverflow 2023 – Visualisation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>StackOverflow 2023 – Visualisation des développeurs</h1>
+      <p>Analyse des revenus et technologies utilisées en Europe et Amérique du Nord.</p>
+    </header>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="revenus">
+        <span class="tab-icon"></span>
+        Revenus
+      </button>
+      <button class="tab-btn" data-tab="competences">
+        <span class="tab-icon"></span>
+        Compétences
+      </button>
+      <button class="tab-btn" data-tab="technos">
+        <span class="tab-icon"></span>
+        Technologies
+      </button>
+    </div>
+
+    <!-- ONGLET 1 : REVENUS -->
+    <section id="tab-revenus" class="tab-content active">
+      <div class="filters">
+        <div class="filter-group">
+          <label for="continent-rev">Continent</label>
+          <select id="continent-rev">
+            <option value="europe">Europe</option>
+            <option value="north_america">Amérique du Nord</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="pays-rev">Pays</label>
+          <select id="pays-rev">
+            <option value="all">Tous les pays</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <article class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Revenu moyen par années d’expérience</div>
+              <div class="chart-subtitle">Montant moyen annuel (en euros)</div>
+            </div>
+            <span class="badge">Expérience</span>
+          </div>
+          <canvas id="chart-rev-experience"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Revenu moyen par niveau d’études</div>
+              <div class="chart-subtitle">Comparaison des formations (en euros)</div>
+            </div>
+            <span class="badge">Études</span>
+          </div>
+          <canvas id="chart-rev-etudes"></canvas>
+        </article>
+      </div>
+    </section>
+
+    <!-- ONGLET 2 : COMPÉTENCES -->
+    <section id="tab-competences" class="tab-content">
+      <div class="filters">
+        <div class="filter-group">
+          <label for="continent-comp">Continent</label>
+          <select id="continent-comp">
+            <option value="europe">Europe</option>
+            <option value="north_america">Amérique du Nord</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="pays-comp">Pays</label>
+          <select id="pays-comp">
+            <option value="all">Tous les pays</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="exp-comp">Années d’expérience</label>
+          <select id="exp-comp">
+            <option value="all">Toutes</option>
+            <option value="0-2">0–2 ans</option>
+            <option value="3-5">3–5 ans</option>
+            <option value="6-10">6–10 ans</option>
+            <option value="10+">10+ ans</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <article class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Revenu moyen par plateforme cloud</div>
+              <div class="chart-subtitle">AWS, Azure, GCP, etc. (en euros)</div>
+            </div>
+            <span class="badge">Cloud</span>
+          </div>
+          <canvas id="chart-cloud"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Revenu moyen par framework web</div>
+              <div class="chart-subtitle">React, Vue, Angular, etc. (en euros)</div>
+            </div>
+            <span class="badge">Web</span>
+          </div>
+          <canvas id="chart-frameworks"></canvas>
+        </article>
+      </div>
+    </section>
+
+    <!-- ONGLET 3 : TECHNOLOGIES -->
+    <section id="tab-technos" class="tab-content">
+      <div class="filters">
+        <div class="filter-group">
+          <label for="continent-tech">Continent</label>
+          <select id="continent-tech">
+            <option value="europe">Europe</option>
+            <option value="north_america">Amérique du Nord</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="devtype-tech">Type de métier</label>
+          <select id="devtype-tech">
+            <option value="all">Tous les métiers</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="topn-tech">Top N éléments</label>
+          <select id="topn-tech">
+            <option value="5">Top 5</option>
+            <option value="6">Top 6</option>
+            <option value="7">Top 7</option>
+            <option value="8">Top 8</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <article class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Top N systèmes d’exploitation</div>
+              <div class="chart-subtitle">Utilisation dans le cadre professionnel</div>
+            </div>
+            <span class="badge">OS</span>
+          </div>
+          <canvas id="chart-os"></canvas>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Top N outils de communication</div>
+              <div class="chart-subtitle">Slack, Teams, Discord, etc.</div>
+            </div>
+            <span class="badge">Communication</span>
+          </div>
+          <canvas id="chart-comms"></canvas>
+        </article>
+      </div>
+    </section>
+  </div>
+  <script src="js/dataParser.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
