@@ -1,4 +1,3 @@
-// --- Conversion monnaie -> euros ---
 const currencyRates = {
   USD: 0.93,
   GBP: 1.16,
@@ -7,22 +6,18 @@ const currencyRates = {
 
 function getCurrencyCode(currencyField) {
   if (!currencyField) return "EUR";
-  return currencyField.split("\t")[0]; // "USD\tUnited States dollar" -> "USD"
+  return currencyField.split("\t")[0];
 }
 
 function convertToEuro(amount, currencyCode) {
   const rate = currencyRates[currencyCode] || 1;
   return amount * rate;
 }
-
-// --- Utilitaires généraux ---
-
 function parseList(str) {
   if (!str || str === "NA") return [];
   return str.split(";").map((s) => s.trim()).filter(Boolean);
 }
 
-// Transforme un enregistrement brut en objet simplifié
 function processRecord(item) {
   const currencyCode = getCurrencyCode(item.Currency);
   const salaryRaw = parseFloat(item.CompTotal);
@@ -41,7 +36,6 @@ function processRecord(item) {
   };
 }
 
-// rawNA et rawWE seront fournis par main.js après chargement des JSON
 let rawNA = [];
 let rawWE = [];
 
@@ -57,16 +51,23 @@ function getDatasetByContinent(continent) {
 
 function getProcessedData(continent) {
   const raw = getDatasetByContinent(continent);
-  return raw.map(processRecord).filter(r => r.salary !== null);
+  
+  return raw.map(processRecord).filter(r => {
+    // 1. On vérifie que le salaire existe
+    if (r.salary === null) return false;
+
+    //On filtre pour enlever les valeurs aberrantes
+    if (r.salary > 400000 || r.salary < 5000) return false;
+
+    return true;
+  });
 }
 
-// Filtre par pays
 function filterByCountry(data, countryValue) {
   if (!countryValue || countryValue === "all") return data;
   return data.filter((d) => d.country === countryValue);
 }
 
-// Filtre par expérience (intervalle texte comme "0-2", "3-5", etc.)
 function filterByExperienceRange(data, expRange) {
   if (!expRange || expRange === "all") return data;
 
@@ -80,13 +81,10 @@ function filterByExperienceRange(data, expRange) {
   });
 }
 
-// Filtre par DevType
 function filterByDevType(data, devType) {
   if (!devType || devType === "all") return data;
   return data.filter((d) => d.devType === devType);
 }
-
-// --- Agrégations pour les graphes ---
 
 function average(values) {
   if (!values.length) return 0;
@@ -94,7 +92,6 @@ function average(values) {
   return sum / values.length;
 }
 
-// Revenu moyen par années d'expérience
 function getAvgSalaryByExperience(data) {
   const groups = {};
 
@@ -114,7 +111,6 @@ function getAvgSalaryByExperience(data) {
   return { labels: labels.map((e) => `${e} ans`), data: dataset };
 }
 
-// Revenu moyen par niveau d'études
 function getAvgSalaryByEdLevel(data) {
   const groups = {};
 
@@ -130,7 +126,6 @@ function getAvgSalaryByEdLevel(data) {
   return { labels, data: dataset };
 }
 
-// Revenu moyen par plateforme cloud
 function getAvgSalaryByCloud(data) {
   const groups = {};
 
@@ -148,7 +143,6 @@ function getAvgSalaryByCloud(data) {
   return { labels, data: dataset };
 }
 
-// Revenu moyen par framework web
 function getAvgSalaryByFramework(data) {
   const groups = {};
 
@@ -166,7 +160,6 @@ function getAvgSalaryByFramework(data) {
   return { labels, data: dataset };
 }
 
-// Top N systèmes d'exploitation
 function getTopOs(data, topN) {
   const counts = {};
 
@@ -186,7 +179,6 @@ function getTopOs(data, topN) {
   };
 }
 
-// Top N outils de communication
 function getTopComms(data, topN) {
   const counts = {};
 

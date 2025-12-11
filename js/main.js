@@ -1,107 +1,133 @@
-// Gestion des onglets
+
 function initTabs() {
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  const tabContents = {
-    revenus: document.getElementById('tab-revenus'),
-    competences: document.getElementById('tab-competences'),
-    technos: document.getElementById('tab-technos')
-  };
+  var tabButtons = document.querySelectorAll('.tab-btn');
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tab = btn.dataset.tab;
+  function activerOnglet(tabName) {
+    for (var i = 0; i < tabButtons.length; i++) {
+      var b = tabButtons[i];
+      var bTab = b.getAttribute('data-tab');
+      if (bTab === tabName) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    }
 
-      tabButtons.forEach(b => b.classList.toggle('active', b === btn));
-      Object.entries(tabContents).forEach(([name, section]) => {
-        section.classList.toggle('active', name === tab);
-      });
+    var sections = [
+      { name: 'revenus', elem: document.getElementById('tab-revenus') },
+      { name: 'competences', elem: document.getElementById('tab-competences') },
+      { name: 'technos', elem: document.getElementById('tab-technos') }
+    ];
 
-      if (tab === 'revenus') refreshRevenueTab();
-      if (tab === 'competences') refreshSkillsTab();
-      if (tab === 'technos') refreshTechTab();
+    for (var j = 0; j < sections.length; j++) {
+      if (sections[j].name === tabName) {
+        sections[j].elem.classList.add('active');
+      } else {
+        sections[j].elem.classList.remove('active');
+      }
+    }
+
+    if (tabName === 'revenus') {
+      refreshRevenueTab();
+    } else if (tabName === 'competences') {
+      refreshSkillsTab();
+    } else if (tabName === 'technos') {
+      refreshTechTab();
+    }
+  }
+
+  for (var i = 0; i < tabButtons.length; i++) {
+    tabButtons[i].addEventListener('click', function () {
+      var tab = this.getAttribute('data-tab');
+      activerOnglet(tab);
     });
-  });
+  }
+
+  activerOnglet('revenus');
 }
 
-// Initialisation des filtres + listeners
 function initFilters() {
-  const continentRev = document.getElementById('continent-rev');
-  const countryRev = document.getElementById('pays-rev');
+  var continentRev = document.getElementById('continent-rev');
+  var countryRev   = document.getElementById('pays-rev');
 
-  const continentComp = document.getElementById('continent-comp');
-  const countryComp = document.getElementById('pays-comp');
-  const expComp = document.getElementById('exp-comp');
+  var continentComp = document.getElementById('continent-comp');
+  var countryComp   = document.getElementById('pays-comp');
+  var expComp       = document.getElementById('exp-comp');
 
-  const continentTech = document.getElementById('continent-tech');
-  const devTypeTech = document.getElementById('devtype-tech');
-  const topNTech = document.getElementById('topn-tech');
+  var continentTech = document.getElementById('continent-tech');
+  var devTypeTech   = document.getElementById('devtype-tech');
+  var topNTech      = document.getElementById('topn-tech');
 
-  // Remplissage initial des listes selon continent par défaut
-  populateCountrySelect(countryRev, continentRev.value);
+  populateCountrySelect(countryRev,  continentRev.value);
   populateCountrySelect(countryComp, continentComp.value);
   populateDevTypeSelect(devTypeTech, continentTech.value);
 
-  // Listeners Revenus
-  continentRev.addEventListener('change', () => {
+  continentRev.addEventListener('change', function () {
     populateCountrySelect(countryRev, continentRev.value);
     refreshRevenueTab();
   });
-  countryRev.addEventListener('change', refreshRevenueTab);
 
-  // Listeners Compétences
-  continentComp.addEventListener('change', () => {
+  countryRev.addEventListener('change', function () {
+    refreshRevenueTab();
+  });
+
+  continentComp.addEventListener('change', function () {
     populateCountrySelect(countryComp, continentComp.value);
     refreshSkillsTab();
   });
-  countryComp.addEventListener('change', refreshSkillsTab);
-  expComp.addEventListener('change', refreshSkillsTab);
 
-  // Listeners Technologies
-  continentTech.addEventListener('change', () => {
+  countryComp.addEventListener('change', function () {
+    refreshSkillsTab();
+  });
+
+  expComp.addEventListener('change', function () {
+    refreshSkillsTab();
+  });
+
+  continentTech.addEventListener('change', function () {
     populateDevTypeSelect(devTypeTech, continentTech.value);
     refreshTechTab();
   });
-  devTypeTech.addEventListener('change', refreshTechTab);
-  topNTech.addEventListener('change', refreshTechTab);
+
+  devTypeTech.addEventListener('change', function () {
+    refreshTechTab();
+  });
+
+  topNTech.addEventListener('change', function () {
+    refreshTechTab();
+  });
 }
 
-// --- Chargement des données JSON (NA + WE) ---
-async function loadData() {
-  try {
-    const [naRes, weRes] = await Promise.all([
-      fetch('data/NA.json'),
-      fetch('data/WE.json')
-    ]);
+function loadData(callback) {
+  $.when(
+    $.getJSON('data/NA.json'),
+    $.getJSON('data/WE.json')
+  ).done(function (naRes, weRes) {
+    var na = naRes[0];
+    var we = weRes[0];
 
-    if (!naRes.ok || !weRes.ok) {
-      console.error('Erreur de chargement des fichiers JSON', naRes.status, weRes.status);
-      return { na: [], we: [] };
+    console.log('Données NA chargées : ', na.length);
+    console.log('Données WE chargées : ', we.length);
+
+    setRawData(na, we);
+
+    if (typeof callback === 'function') {
+      callback();
     }
-
-    const na = await naRes.json();
-    const we = await weRes.json();
-    return { na, we };
-  } catch (err) {
-    console.error('Erreur lors du fetch des données :', err);
-    return { na: [], we: [] };
-  }
+  }).fail(function (jqXHR, textStatus, errorThrown) {
+    console.log('Erreur lors du chargement des JSON : ', textStatus, errorThrown);
+    alert('Erreur de chargement des données (voir console).');
+  });
 }
 
-// Point d’entrée
-window.addEventListener('DOMContentLoaded', async () => {
-  // 1. Charger les données JSON
-  const { na, we } = await loadData();
-
-  // 2. Les transmettre au parser (dataParser.js)
-  setRawData(na, we);
-
-  // 3. Initialiser l’UI
-  initTabs();
+$(document).ready(function () {
   initCharts();
-  initFilters();
+  loadData(function () {
+    initTabs();
+    initFilters();
 
-  // 4. Premier affichage des graphes
-  refreshRevenueTab();
-  refreshSkillsTab();
-  refreshTechTab();
+    refreshRevenueTab();
+    refreshSkillsTab();
+    refreshTechTab();
+  });
 });

@@ -170,7 +170,7 @@ select option {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 260px;
+  min-height: 350px;
 }
 
 .chart-header {
@@ -192,8 +192,11 @@ select option {
 
 canvas {
   width: 100% !important;
-  height: 220px !important;
+  height: 350px !important;
+  display: block;
 }
+
+
 
 .badge {
   font-size: 0.7rem;
