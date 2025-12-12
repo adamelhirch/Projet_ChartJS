@@ -11,7 +11,7 @@ const pieColors = [
   '#ec4899'
 ];
 
-// Dictionnaire pour raccourcir les noms des diplômes
+//Dictionnaire pour raccourcir les noms des diplômes
 const educationLabelsShort = {
   "Bachelor’s degree (B.A., B.S., B.Eng., etc.)": "Bachelor",
   "Master’s degree (M.A., M.S., M.Eng., MBA, etc.)": "Master",
@@ -34,7 +34,7 @@ function createLineChart(ctxId, label, labels, data) {
         label,
         data,
         tension: 0.3,
-        borderColor: '#3b82f6', // Bleu sympa
+        borderColor: '#3b82f6',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         fill: true
       }]
@@ -43,7 +43,6 @@ function createLineChart(ctxId, label, labels, data) {
       responsive: true,
       maintainAspectRatio: false,
       layout: {
-        // Ajoute de la marge en bas pour ne pas couper les labels "10 ans"
         padding: { bottom: 10 } 
       },
       plugins: {
@@ -123,7 +122,7 @@ function createBarChart(ctxId, label, labels, data, axis = 'x') {
   });
 }
 
-// Initialisation des 6 graphiques avec des données vides
+//Initialisation des 6 graphiques
 function initCharts() {
   charts.revExp = createLineChart('chart-rev-experience', 'Revenu moyen (€)', [], []);
 charts.revEdu = createBarChart('chart-rev-etudes', 'Revenu moyen (€)', [], [], 'y');
@@ -163,7 +162,7 @@ function formatLabel(str, maxwidth) {
   });
   return sections;
 }
-// Fonctions de mise à jour
+//Fonctions de mise à jour
 function updateRevExpChart(labels, data) {
   charts.revExp.data.labels = labels;
   charts.revExp.data.datasets[0].data = data;
@@ -178,8 +177,6 @@ function updateRevEdChart(labels, data) {
 
   chart.data.labels = cleanLabels;
   chart.data.datasets[0].data = data;
-  
-  // Configuration pour garder la taille fixe et lisible
   chart.options.indexAxis = 'y';
   chart.options.maintainAspectRatio = false;
   
@@ -199,32 +196,24 @@ function updateRevEdChart(labels, data) {
 }
 
 function updateCloudChart(labels, data) {
-  // On ne garde que les 12 premiers éléments pour que ça reste lisible dans 350px
   const topLimit = 12;
-  
   charts.cloud.data.labels = labels.slice(0, topLimit);
   charts.cloud.data.datasets[0].data = data.slice(0, topLimit);
-  
-  // Petits ajustements pour le mode horizontal
   charts.cloud.options.indexAxis = 'y'; 
-  charts.cloud.options.scales.x.ticks.color = '#9ca3af'; // Axe des valeurs en gris
-  charts.cloud.options.scales.y.ticks.color = '#ffffff'; // Noms (AWS, Azure...) en blanc
+  charts.cloud.options.scales.x.ticks.color = '#9ca3af';
+  charts.cloud.options.scales.y.ticks.color = '#ffffff';
   charts.cloud.options.scales.y.ticks.font = { weight: 'bold' };
 
   charts.cloud.update();
 }
 
 function updateFrameworksChart(labels, data) {
-  // Idem, on coupe à 12 éléments
   const topLimit = 12;
-
   charts.frameworks.data.labels = labels.slice(0, topLimit);
   charts.frameworks.data.datasets[0].data = data.slice(0, topLimit);
-
-  // Ajustements visuels
   charts.frameworks.options.indexAxis = 'y';
   charts.frameworks.options.scales.x.ticks.color = '#9ca3af';
-  charts.frameworks.options.scales.y.ticks.color = '#ffffff'; // Noms (React, Vue...) en blanc
+  charts.frameworks.options.scales.y.ticks.color = '#ffffff';
   charts.frameworks.options.scales.y.ticks.font = { weight: 'bold' };
 
   charts.frameworks.update();

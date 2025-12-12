@@ -1,4 +1,4 @@
-// Remplit les listes de pays et DevType en fonction du continent
+//Remplit les listes de pays et DevType en fonction du continent
 
 function populateCountrySelect(selectElement, continent) {
   const processed = getProcessedData(continent);
@@ -16,7 +16,7 @@ function populateDevTypeSelect(selectElement, continent) {
     devTypes.map(d => `<option value="${d}">${d}</option>`).join('');
 }
 
-// Fonctions pour mettre à jour tous les graphes d'un onglet
+//Fonctions pour mettre à jour tous les graphes d'un onglet
 
 function refreshRevenueTab() {
   const continent = document.getElementById('continent-rev').value;
